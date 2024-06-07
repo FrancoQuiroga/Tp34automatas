@@ -57,17 +57,28 @@ def obtener_fila(string_entrada):
         return 5
     elif string_entrada == "G":
         return 6
-
+ 
 def calcularcuenta(cadena): # No es necesario un try/except porque la verificación se hace con el arbol sintactico
     resultado = eval(cadena)
     return (f'El resultado de tu operación es: {resultado}')
 
+def listarelementos(entrada): #lista de strings para usar en el árbol
+    result = re.findall(r'\d+|[()+\-%]', entrada)
+    return result
+
 def arbolsintactico(cadena):
+    
     pila = Pila()
     resultado = ''
-    print('{:<15}{:<25}{:>20}'.format('PILA', 'ENTRADA', 'SALIDA')) 
-    print('{:<15}{:<25}{:>20}'.format(pila.contenido(), ))
-
+    print('{:<30}{:<25}{:>25}'.format('PILA', 'ENTRADA', 'SALIDA')) 
+    
+#   while cadena:
+    print('{:<30}{:<25}{:>25}'.format(str(pila.contenido()), cadena, resultado))
+    if pila.inspeccionar() == '$':
+        return 'Árbol sintáctico completo'
+    entradaactual = cadena[0]
+    cimadepila = pila.inspeccionar()
+    salidactual = tablasintáctica[obtener_fila(cimadepila)][obtener_columna(entradaactual)]
 
 class Testcolumnayfila(unittest.TestCase):
     def test_columna_id(self):
@@ -75,6 +86,10 @@ class Testcolumnayfila(unittest.TestCase):
 class Testcuenta(unittest.TestCase):
     def test_returnt(self):
         self.assertEqual(calcularcuenta('10+10'), 'El resultado de tu operación es: 20')
+    def test_listarelementos(self):
+        cadena = '10+10'
+        self.assertEqual(listarelementos(cadena), ['10','+','10'])
+
 arbolsintactico('HOLA')
 
 
