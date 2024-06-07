@@ -29,33 +29,33 @@ tablasintáctica=[ ["E->TE'","","","","E->TE'","",""]
 def obtener_columna(simbolo_entrada):
     if re.match(r'[\d]+', simbolo_entrada):
         return 0
-    if simbolo_entrada == '+':
+    elif simbolo_entrada == '+':
         return 1
-    if simbolo_entrada == '-':
+    elif simbolo_entrada == '-':
         return 2
-    if simbolo_entrada == '%':
+    elif simbolo_entrada == '%':
         return 3
-    if simbolo_entrada == '(':
+    elif simbolo_entrada == '(':
         return 4
-    if simbolo_entrada == ')':
+    elif simbolo_entrada == ')':
         return 5
-    if simbolo_entrada == '$':
+    elif simbolo_entrada == '$':
         return 6
 
 def obtener_fila(string_entrada):
     if    string_entrada == 'E':
         return 0
-    if string_entrada == "E'":
+    elif string_entrada == "E'":
         return 1
-    if string_entrada == "T":
+    elif string_entrada == "T":
         return 2
-    if string_entrada == "T'":
+    elif string_entrada == "T'":
         return 3
-    if string_entrada == "F":
+    elif string_entrada == "F":
         return 4
-    if string_entrada == "F'":
+    elif string_entrada == "F'":
         return 5
-    if string_entrada == "G":
+    elif string_entrada == "G":
         return 6
 
 def calcularcuenta(cadena): # No es necesario un try/except porque la verificación se hace con el arbol sintactico
@@ -66,7 +66,7 @@ def arbolsintactico(cadena):
     pila = Pila()
     resultado = ''
     print('{:<15}{:<25}{:>20}'.format('PILA', 'ENTRADA', 'SALIDA')) 
-
+    print('{:<15}{:<25}{:>20}'.format(pila.contenido(), ))
 
 
 class Testcolumnayfila(unittest.TestCase):
