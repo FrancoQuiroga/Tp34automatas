@@ -1,30 +1,30 @@
 import re
-import unittest
-
+#import unittest
 class Pila:
-     def __init__(self):
-         self.items = ['$','E']
+    def __init__(self):
+        self.items = ['$','E']
 
-     def insertar(self, item): #inserta elemento en la pila (cima)
-         self.items.append(item)
+    def insertar(self, item): #inserta elemento en la pila (cima)
+        self.items.append(item)
 
-     def extraer(self): #extrae elemento de la pila (cima)
-         return self.items.pop()
+    def extraer(self): #extrae elemento de la pila (cima)
+        return self.items.pop()
 
-     def inspeccionar(self): #devuelve el elemento de la cima de la pila
-         return self.items[len(self.items)-1]
+    def inspeccionar(self): #devuelve el elemento de la cima de la pila
+        return self.items[-1]
      
-     def contenido(self): #devuelve el tamaño de la pila
-         return (self.items)
+    def contenido(self): #devuelve el tamaño de la pila
+        return self.items
 
-tablasintáctica=[ ["E->TE'","","","","E->TE'","",""]
-                 ,["","E'->+TE'","","","E'->e","","E'->e"]
-                 ,["T->FT'","","","","T->FT'","",""]
-                 ,["","T'->e","T'->-FT'","","","F'->e","F'->e"]
-                 ,["F->GF'","","","","F->GF'","",""]
-                 ,["","F'->e","F'->e","F'->%GF'","","F'->e","F'->e"]
-                 ,["G->id","","","","G->( E )","",""]]
-
+tablasintactica = [
+    ["E->T E'", "", "", "", "E->T E'", "", ""],
+    ["", "E'->+ T E'", "", "", "E'->e", "", "E'->e"],
+    ["T->F T'", "", "", "", "T->F T'", "", ""],
+    ["", "T'->e", "T'->- F T'", "", "", "F'->e", "F'->e"],
+    ["F->G F'", "", "", "", "F->G F'", "", ""],
+    ["", "F'->e", "F'->e", "F'->% G F'", "", "F'->e", "F'->e"],
+    ["G->id", "", "", "", "G->( E )", "", ""]
+]
 
 def obtener_columna(simbolo_entrada):
     if re.match(r'[\d]+', simbolo_entrada):
@@ -43,7 +43,7 @@ def obtener_columna(simbolo_entrada):
         return 6
 
 def obtener_fila(string_entrada):
-    if    string_entrada == 'E':
+    if string_entrada == 'E':
         return 0
     elif string_entrada == "E'":
         return 1
@@ -57,67 +57,80 @@ def obtener_fila(string_entrada):
         return 5
     elif string_entrada == "G":
         return 6
- 
+
 def calcularcuenta(cadena): # No es necesario un try/except porque la verificación se hace con el arbol sintactico
     resultado = eval(cadena)
-    return (f'El resultado de tu operación es: {resultado}')
+    return f'El resultado de tu operación es: {resultado}'
 
 def listarelementos(entrada): #lista de strings para usar en el árbol
     result = re.findall(r'\d+|[()+\-%]', entrada)
+    result.append('$')  
     return result
 
 def arbolsintactico(cadena):
-    estado = ''
+    cadena = listarelementos(cadena)
     pila = Pila()
     resultado = ''
     print('{:<30}{:<25}{:>25}'.format('PILA', 'ENTRADA', 'SALIDA')) 
-    
+
     while cadena:
-        
-        if pila.inspeccionar() == '$':
+        if pila.inspeccionar() == '$' and cadena[0] == '$':
+            print('{:<30}{:<25}{:>25}'.format(str(pila.contenido()), str(cadena), resultado))
             return 'Árbol sintáctico completo'
+        
         entradaactual = cadena[0]
         cimadepila = pila.inspeccionar()
+        
+        if re.match(r'[\d]+', entradaactual) and cimadepila == 'id':
+            pila.extraer()
+            cadena.pop(0)
+            print('{:<30}{:<25}{:>25}'.format(str(pila.contenido()), str(cadena), resultado))
+            continue
+        
         if cimadepila == entradaactual:
             pila.extraer()
-            entradaactual.pop()
-            print('{:<30}{:<25}{:>25}'.format(str(pila.contenido()), cadena, resultado))
+            cadena.pop(0)
+            print('{:<30}{:<25}{:>25}'.format(str(pila.contenido()), str(cadena), resultado))
+            continue
+        
         try:
-            resultado = tablasintáctica[obtener_fila(cimadepila)][obtener_columna(entradaactual)]
-            
+            resultado = tablasintactica[obtener_fila(cimadepila)][obtener_columna(entradaactual)]
         except:
-            print(f'La cadena tiene un error sintático en la entrada actual: \n {entradaactual} (No forma parte del analizador sintáctico)' )
-            estado = 'Error'
-            break
+            print(f'La cadena tiene un error sintáctico en la entrada actual: \n {entradaactual} (No forma parte del analizador sintáctico)')
+            return 'Error'
 
         if resultado == '':
-            estado = 'Error'
             print('La cadena ingresada está mal escrita')
-            break
+            return 'Error'
+
         posicion = resultado.find('>')
         produccionsig = resultado[posicion+1:]
-        produccionpilatemp = []
-        for simbolo in produccionsig.split():
+        pila.extraer()
+        for simbolo in reversed(produccionsig.split()):
             if simbolo != 'e':
-                produccionpilatemp.append(simbolo)
-        for simbolo in reversed(produccionpilatemp):
-            pila.insertar(simbolo)
-
-        print('{:<30}{:<25}{:>25}'.format(str(pila.contenido()), cadena, resultado))
+                pila.insertar(simbolo)
+        
+        print('{:<30}{:<25}{:>25}'.format(str(pila.contenido()), str(cadena), resultado))
 #    if pila.contenido == ['$','E']:
 #        print('No ingresó ning')
 
-class Testcolumnayfila(unittest.TestCase):
-    def test_columna_id(self):
-        self.assertEqual(obtener_columna('195 + 200'), 0)
-class Testcuenta(unittest.TestCase):
-    def test_returnt(self):
-        self.assertEqual(calcularcuenta('10+10'), 'El resultado de tu operación es: 20')
-    def test_listarelementos(self):
-        cadena = '10+10'
-        self.assertEqual(listarelementos(cadena), ['10','+','10'])
-
-arbolsintactico('10+5')
+# class Testcolumnayfila(unittest.TestCase):
+#     def test_columna_id(self):
+#         self.assertEqual(obtener_columna('195 + 200'), 0)
+# class Testcuenta(unittest.TestCase):
+#     def test_returnt(self):
+#         self.assertEqual(calcularcuenta('10+10'), 'El resultado de tu operación es: 20')
+#     def test_listarelementos(self):
+#         cadena = '10+10'
+#         self.assertEqual(listarelementos(cadena), ['10','+','10'])
 
 
-unittest.main()
+def main():
+    entrada = input("Ingrese una expresión matemática(Ej:10+5-2): ")
+    arbolsintactico(entrada)
+    print(calcularcuenta(entrada))
+
+if __name__ == "__main__":
+    main()
+
+# unittest.main()
