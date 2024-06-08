@@ -22,7 +22,7 @@ tablasintáctica=[ ["E->TE'","","","","E->TE'","",""]
                  ,["T->FT'","","","","T->FT'","",""]
                  ,["","T'->e","T'->-FT'","","","F'->e","F'->e"]
                  ,["F->GF'","","","","F->GF'","",""]
-                 ,["","F'->e","F'->e","F'->% GF'","","F'->e","F'->e"]
+                 ,["","F'->e","F'->e","F'->%GF'","","F'->e","F'->e"]
                  ,["G->id","","","","G->( E )","",""]]
 
 
@@ -67,18 +67,45 @@ def listarelementos(entrada): #lista de strings para usar en el árbol
     return result
 
 def arbolsintactico(cadena):
-    
+    estado = ''
     pila = Pila()
     resultado = ''
     print('{:<30}{:<25}{:>25}'.format('PILA', 'ENTRADA', 'SALIDA')) 
     
-#   while cadena:
-    print('{:<30}{:<25}{:>25}'.format(str(pila.contenido()), cadena, resultado))
-    if pila.inspeccionar() == '$':
-        return 'Árbol sintáctico completo'
-    entradaactual = cadena[0]
-    cimadepila = pila.inspeccionar()
-    salidactual = tablasintáctica[obtener_fila(cimadepila)][obtener_columna(entradaactual)]
+    while cadena:
+        
+        if pila.inspeccionar() == '$':
+            return 'Árbol sintáctico completo'
+        entradaactual = cadena[0]
+        cimadepila = pila.inspeccionar()
+        if cimadepila == entradaactual:
+            pila.extraer()
+            entradaactual.pop()
+            print('{:<30}{:<25}{:>25}'.format(str(pila.contenido()), cadena, resultado))
+        try:
+            resultado = tablasintáctica[obtener_fila(cimadepila)][obtener_columna(entradaactual)]
+            
+        except:
+            print(f'La cadena tiene un error sintático en la entrada actual: \n {entradaactual} (No forma parte del analizador sintáctico)' )
+            estado = 'Error'
+            break
+
+        if resultado == '':
+            estado = 'Error'
+            print('La cadena ingresada está mal escrita')
+            break
+        posicion = resultado.find('>')
+        produccionsig = resultado[posicion+1:]
+        produccionpilatemp = []
+        for simbolo in produccionsig.split():
+            if simbolo != 'e':
+                produccionpilatemp.append(simbolo)
+        for simbolo in reversed(produccionpilatemp):
+            pila.insertar(simbolo)
+
+        print('{:<30}{:<25}{:>25}'.format(str(pila.contenido()), cadena, resultado))
+#    if pila.contenido == ['$','E']:
+#        print('No ingresó ning')
 
 class Testcolumnayfila(unittest.TestCase):
     def test_columna_id(self):
@@ -90,7 +117,7 @@ class Testcuenta(unittest.TestCase):
         cadena = '10+10'
         self.assertEqual(listarelementos(cadena), ['10','+','10'])
 
-arbolsintactico('HOLA')
+arbolsintactico('10+5')
 
 
 unittest.main()
