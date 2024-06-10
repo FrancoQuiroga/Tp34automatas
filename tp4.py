@@ -64,6 +64,10 @@ def body():
     '''
 tabla=[[1,'E',"E"],[2,3,4],[2,3,4],[2,3,4],[4,4,4]] # [estado a cambiar con m,estado a cambiar con n, Acepta Cadena Actual] 
 estado = 0
+
+print ("""+-------------------------------------+
+|    La ExReg que acepta es: m(m|n)*  |
++-------------------------------------+""")
  
 print ("""+-------------------------------------+
 |    Ingrese una cadena a evaluar:    |
