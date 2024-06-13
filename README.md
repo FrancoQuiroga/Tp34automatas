@@ -2,6 +2,7 @@
 
 ## Cosas que hacer:
   - (Función) Leer el archivo .csv
+  - (Función) Corregir los errores de lectura que tiene la libreria pandas(Arreglar las filas desalineadas, arreglar los Dtypes(que tipos de datos tienen) de las columnas)
   - (Clase) Crear un nuevo archivo .csv solo con los datos de AP/Fechas/Usuarios (Descartar los otros datos? Descartar los datos después de que se realice la entrada? o se descartan antes de buscar?)
   - (Función) Tomar los inputs del usuario (Lógica de los inputs de los usuarios)?
   - (Clase) Analizador de los datos mediante RegEx
