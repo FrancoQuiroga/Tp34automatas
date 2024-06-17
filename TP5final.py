@@ -1,3 +1,4 @@
+import re
 class InputError(Exception):
     pass
 
@@ -17,3 +18,11 @@ def tomaruserinput(cantidadopciones: int)-> int:
             print('La opcion tiene que ser un número')
 
 # tomaruserinput(5)
+class AnalizadorSintáctico: #Tipos de datos a analizar: Access Points, Usuarios, Tiempo determinado
+    def __init__(self,basededatos=[],inicioperiodo=0,finperiodo=0):
+        self.basededatos = basededatos
+        self.inicioperiodo = inicioperiodo
+        self.finperiodo = finperiodo
+
+    def analizarfechas(self):
+        pass
